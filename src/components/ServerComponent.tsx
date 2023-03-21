@@ -25,24 +25,27 @@ export type Profile = {
   };
 };
 
-const getData = (): Promise<Profile> => {
-  const id = Math.floor(Math.random() * 10) + 1;
+export const getData = (id?: number): Promise<Profile> => {
+  const randId = Math.floor(Math.random() * 10) + 1;
   return new Promise((resolve) => {
     setTimeout(() => {
-      const res = fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
-        method: "GET",
-      });
+      const res = fetch(
+        `https://jsonplaceholder.typicode.com/users/${id || randId}`,
+        {
+          method: "GET",
+        }
+      );
       resolve(res.then((res) => res.json()));
-    }, 5000);
+    }, 2000);
   });
 };
 
 const ServerComponent = async () => {
-  const { name, company } = await getData();
+  const { name, email, company } = await getData();
 
   return (
-    <div className="grid grid-cols-4 shadow-md p-2 rounded-md items-center bg-white">
-      <div className="relative w-16 h-16 overflow-hidden rounded-full col-span-1">
+    <div className="grid grid-cols-4 shadow-md p-2 rounded-md items-center bg-white w-80">
+      <div className="relative w-16 h-16 overflow-hidden rounded-full col-span-1 row-span-2">
         <Image
           fill
           src={
@@ -51,8 +54,9 @@ const ServerComponent = async () => {
           alt={`Image of ${name}`}
         />
       </div>
-      <div className="col-span-3 ml-6">
+      <div className="col-span-3 ml-6 flex flex-col row-span-2">
         <h1 className="text-2xl font-bold">{name}</h1>
+        <span className="col-span-full">{email}</span>
       </div>
       <h2 className="col-span-full font-bold">{company.name}</h2>
       <p className="col-span-full text-sm">{company.catchPhrase}</p>
